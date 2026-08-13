@@ -1,0 +1,27 @@
+# Virtual environment
+venv/
+
+# Dataset
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model checkpoints
+models/
+*.pth
+*.pt
+*.ckpt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Results
+results/
+
+# macOS
+.DS_Store
