@@ -1,30 +1,27 @@
 from pathlib import Path
-
+import pandas as pd
 from PIL import Image
+import torch
 from torch.utils.data import Dataset
 
-
 class DeepfakeDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
-        self.root_dir = Path(root_dir)
+    def __init__(self, csv_file, transform=None):
+        """
+        csv_file 구조 예시:
+        filepath,label
+        data/real/001.jpg,0
+        data/fake/002.jpg,1
+        """
+        self.df = pd.read_csv(csv_file)
         self.transform = transform
 
-        self.samples = []
-
-        # Real = 0
-        # Fake = 1
-        for label, class_name in enumerate(["real", "fake"]):
-            class_dir = self.root_dir / class_name
-
-            for image_path in class_dir.iterdir():
-                if image_path.suffix.lower() in [".jpg", ".jpeg", ".png"]:
-                    self.samples.append((image_path, label))
-
     def __len__(self):
-        return len(self.samples)
+        return len(self.df)
 
     def __getitem__(self, index):
-        image_path, label = self.samples[index]
+        row = self.df.iloc[index]
+        image_path = Path(row['filepath'])
+        label = int(row['label'])
 
         image = Image.open(image_path).convert("RGB")
 
