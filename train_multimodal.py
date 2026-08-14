@@ -40,10 +40,12 @@ def main():
 
     # 3. 모델 및 손실함수/옵티마이저 정의
     model = GMUModel(video_dim=512, audio_dim=512, hidden_dim=256, num_classes=2).to(device)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    # Real(0) 손실에 약 1.4~1.5배 가중치 부여 (Real: 1345개, Fake: 1898개 비율 반영)
+    class_weights = torch.tensor([1.4, 1.0]).to(device)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
 
-    epochs = 10
+    epochs = 20
     best_loss = float('inf')
 
     # 4. 학습 루프
